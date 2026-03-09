@@ -1,0 +1,1898 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IPv6 Address Representation | NetworkAcademy.IO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Skip to main content
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Search
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Main navigation
+
+
+
+
+
+Learning Paths
+
+
+
+
+
+Courses
+
+
+
+
+
+
+
+
+
+User Anonymous
+
+
+
+
+
+Sign up
+
+
+
+
+
+Log in
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Learning Path: CCNA Enterprise Infrastructure (200-301) CCNAv1.1
+
+
+
+
+
+IPv6 Fundamentals
+
+
+
+
+
+IPv6 Address Representation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IPv6 Address Representation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wider Page Bigger text
+
+
+
+
+
+
+
+
+
+
+
+
+
+When engineers first encounter IPv6, the most obvious and recognizable feature of the protocol is the IP address. It is quite different than the IPv4 one and at first, it seems hard to grasp. The other distinct difference is that IPv6 includes new address types such as link-local addresses. In this lesson, we are going to see that working with IPv6 addresses is not that hard. There are rules to shorten down the address and make it easier to work with.
+
+The IPv6 Address
+
+An IPv6 address is 128 bits in length and is written as eight groups of four hexadecimal digits. Each group is separated from the others by colons (:) as shown in figure 1. Hexadecimal characters are not case sensitive, therefore an address can be written either in uppercase or lowercase, both are equivalent.
+
+Figure 1. Example of an IPv6 addressThe eight groups make a total of 32 hexadecimal digits, four bits each, which makes a total of 128 bits. RFC 4291 says that the preferred representation of an IPv6 address is x:x:x:x:x:x:x:x and RFC 5952 recommends that the address is written in lowercase.
+
+It is obvious that IPv6 addresses are long and hard to remember and work with. That's why there are rules that can significantly shorten the address
+
+Shortening IPv6 addresses
+
+There are two rules, described in RFCs 2373 and 5952, that help engineers to reduce the length of the address representation. It's important to understand from the very beginning that using these two rules shortens only the representation of the address, the address itself is always 128 bits.
+
+Rule 1: Omit groups of all zeros
+
+The first rule that we are going to look at is called Zero Compression. It says that a double colon (::) can replace a single, contiguous string of one or more groups consisting of all 0s. Example 1 illustrates the use of this rule.
+
+Figure 2 - Applying Zero Compression - example 1Note that Groups 4,5,6 and 7 of the IP address are all zeros. The rule says that we can replace them with a single double colon. There is one very important aspect of this rule - this zero compression with a double colon can be applied only once! Because otherwise, the original IPv6 address cannot be recreated from the shorted representation.
+
+IMPORTANT -  The :: can only appear once in an IPv6 address.
+
+Example 2 illustrates this. Note that there are two contiguous strings of zeros - Group 4 and 5, and Group 7. Having in mind that we can use only one double colon, we can either replace groups 4 and 5 with :: or group 7, but not both.
+
+Figure 3 - Applying Zero Compression - example 2Rule 2: Omit Leading zeros
+
+The other way to shorten addresses is to omit leading zeros in any group of 4 hexadecimal digits. The rule applies only to leading zeros and no trailing zeros. Even if a group consists of 4 zeros 0000 we can only omit the leading 3 - 0000. This is illustrated in the following example.
+
+Figure 4 - Applying Zero Compression - example 3Note that all underscored groups have at least on leading zero. For groups 2,3 and 8, the rules are pretty straightforward, you just remove the leading zeros and that's about it. But if you look at group 4 for example, you cannot remove all four zeros, so the trailing zero highlighted in yellow must remain.
+
+Combining Rule 1 and 2
+
+The shortest possible representation is achieved by combining both rules we have discussed. Let's get the IP address from example 3 and apply rule 1 and rule 2 at the same time.
+
+Figure 5 - Applying Zero Compression - example 4You can see that after we apply both rules, the resulting representation is significantly shorter.
+
+Common Mistakes
+
+There are several common mistakes people make when they start applying these techniques. Let's look at several examples and highlight the key points.
+
+
+
+IPv6 address
+
+2001:0cb0:0000:0000:0fc0:0000:0000:0abc
+
+
+
+Correctly Shortened
+
+2001:cb0::fc0:0:0:abc
+
+2001:cb0:0:0:fc0::abc
+
+
+
+Common Mistake 1 - using :: twice
+
+2001:cb0::fc0::abc
+
+
+
+Common Mistake 2 - removing trailing zeros
+
+2001:cb::fc:0:0:abc
+
+In this example, in the original address, there are two consecutive strings of zeros, in groups 3 and 4, and in groups 6 and 7. People often try to replace both with :: and end up with two double colons in the shortened address. This is not allowed though, because it creates an ambiguous address representation. The other common mistake is to remove trailing zeros. Note the hex digits in group 2 - 0cb0, people often remove both 0s, but only the leading zero is allowed to be removed.
+
+Let's have a look at a few more examples.
+
+
+
+Example 1 - The match-all address
+
+IPv6 address - 0000:0000:0000:0000:0000:0000:0000:0000
+
+Shortened - ::
+
+
+
+This is one appears very often in questions regarding IPv6 addresses. It is a valid address similar to 0.0.0.0 in IPv4 and its shortened representation is just a double colon.
+
+
+
+Example 2 - The loopback address
+
+IPv6 address - 0000:0000:0000:0000:0000:0000:0000:0001
+
+Shortened - ::1
+
+
+
+The above example is the well-knows v6 loopback address. This is the v6 alternative to the well-known 127.0.0.1 in IPv4.
+
+
+
+Example 3 - The all-nodes address
+
+IPv6 address - ff02:0000:0000:0000:0000:0000:0000:0001
+
+Shortened - ff02::1
+
+
+
+The above example is the well-knows all-nodes multicast address. This is the v6 alternative to the well-known 224.0.0.1 in IPv4. The last example we are going to look at is a random link-local address.
+
+
+
+Example 2 - A random link-local address
+
+IPv6 address - fe80:0000:0000:0000:0f19:1faf:008:5010
+
+Shortened - fe80::f19:1faf:8:5010
+
+
+
+
+
+It is very important to understand both rules for shortening addresses and to be able to apply them correctly on any random IPv6 address. There are at least a few questions in the CCNA exam that are related in some way to this topic.
+
+Prefix Length
+
+In IPv4, the network portion of the address is written as a dotted-decimal network mask such as 255.255.255.0 and is called a subnet mask. It can also be represented as classless inter-domain routing (CIDR) notation such as /24 indicating that the first 24 bits of the IP address is the network portion.
+
+In IPv6, there is no dotted-decimal representation but only CIDR notation such as /126. Therefore, there is only one way to write an IPv6 prefix:
+
+ipv6-address/prefix-length
+
+The prefix length is a decimal value showing that the number of leftmost bits of the address is the network portion. Let's take 2001:aaaa:bbbb:cccc:0:0:0:10/64 for example. The netmask length of 64 means that the IPv6 subnet is 2001:aaaa:bbbb:cccc::/64 and  2001:aaaa:bbbb:cccc::10 is a node in this subnet.
+
+Figure 6. IPv6 Prefix NotationTypically in IPv6, engineers choose prefix lengths that are multiples of four. That makes the prefix easier to understand without using a subnet calculator. Look at the example in figure 6, each additional 4 in the prefix length moves the network portion of the address one hexadecimal digit to the right.
+
+
+
+Table 1 - IPv6 Subnetting Example
+
+Prefix Lenght
+
+Network Portion
+
+Total Addresses
+
+/4
+
+2::
+
+2 124
+
+/8
+
+20::
+
+2 120
+
+/12
+
+200::
+
+2 116
+
+/16
+
+2001::
+
+2 112
+
+/20
+
+2001:0::
+
+2 108
+
+/24
+
+2001:0d::
+
+2 104
+
+/28
+
+2001:0df::
+
+2 100
+
+/32
+
+2001:0df8::
+
+2 96
+
+/36
+
+2001:0df8:0::
+
+2 92
+
+/40
+
+2001:0df8:00::
+
+2 88
+
+/44
+
+2001:0df8:00f::
+
+2 84
+
+/48
+
+2001:0df8:00f2::
+
+2 80
+
+/52
+
+2001:0df8:00f2:0::
+
+2 76
+
+/56
+
+2001:0df8:00f2:00::
+
+2 72
+
+/60
+
+2001:0df8:00f2:000::
+
+2 68
+
+/64
+
+2001:0df8:00f2:0000::
+
+2 64
+
+
+
+Summary
+
+An IPv6 address is a string of 128 bits represented as 32 hexadecimal digits grouped in eight groups separated by colons.
+
+Due to its length, it is hard to work with. Two rules have been introduced that shorten the address representation.
+
+Rule 1, called Zero Compression, omits a group of consecutive zeros and replaces them with a double colon (::). This can only be applied once per IPv6 address, otherwise, the shortened representation becomes ambiguous.
+
+Rule 2 omits leading zeros in a every group of hexadecimal digits. It does not apply to trailing zeros though.
+
+
+
+The prefix length of IPv6 address is written in CIDR notation like ipv6-address/prefix-length. There is no dotted-decimal representation such as 255.255.255.0 in IPv6.
+
+There are at least a few questions in the CCNA exam that are related in some way to address shortening using the above rules.
+
+
+
+
+
+Book traversal links for 6
+
+
+
+
+
+Previous LessonIPv6 Addressing
+
+
+
+
+
+Next LessonIPv6 Address Types
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Introduction to IP Version 6
+
+
+
+
+
+What is IPv6?
+
+
+
+
+
+IPv4 vs IPv6 - Understanding the differences
+
+
+
+
+
+
+
+
+
+IPv6 Addressing
+
+
+
+
+
+IPv6 Address Representation
+
+
+
+
+
+IPv6 Address Types
+
+
+
+
+
+IPv6 Neighbor Discovery Protocol
+
+
+
+
+
+IPv6 Stateless Address Auto-configuration (SLAAC)
+
+
+
+
+
+IPv6 on Windows
+
+
+
+
+
+Stateless DHCPv6
+
+
+
+
+
+Stateful DHCPv6
+
+
+
+
+
+
+
+
+
+Implementing IPv6
+
+
+
+
+
+IPv6 Routing Overview
+
+
+
+
+
+IPv6 Static Routing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tags
+
+
+
+
+
+
+
+
+
+IPv6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Comments
+
+
+
+
+
+
+
+
+
+There are no comments yet.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Main navigation
+
+
+
+
+
+Learning Paths
+
+
+
+
+
+Courses
+
+
+
+
+
+
+
+
+
+
+
+
+
+Legal
+
+
+
+
+
+Our Cookie Policy
+
+
+
+
+
+Our Privacy Policy
+
+
+
+
+
+Our Terms of Service
+
+
+
+
+
+
+
+
+
+
+
+
+
+Contribute
+
+
+
+
+
+Become an Author
+
+
+
+
+
+Donate
+
+
+
+
+
+Suggest an improvement
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Copyright © 2020-2025 NetworkAcademy.io
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IPv6 Address Types | NetworkAcademy.IO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Skip to main content
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Search
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Main navigation
+
+
+
+
+
+Learning Paths
+
+
+
+
+
+Courses
+
+
+
+
+
+
+
+
+
+User Anonymous
+
+
+
+
+
+Sign up
+
+
+
+
+
+Log in
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Learning Path: CCNA Enterprise Infrastructure (200-301) CCNAv1.1
+
+
+
+
+
+IPv6 Fundamentals
+
+
+
+
+
+IPv6 Address Types
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IPv6 Address Types
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wider Page Bigger text
+
+
+
+
+
+
+
+
+
+
+
+
+
+The IPv6 Address Space
+
+As we already learned, IPv6 addresses are 128-bit long, which means that there are 340 undecillion possible addresses (the exact number is shown below).
+
+340,282,366,920,938,463,463,374,607,431,768,211,456
+
+For reference, in IPv4 with its 32-bit address space, there are 4.29 billion possible addresses.
+
+The Internet Assigned Numbers Authority (IANA) allocates only a small portion of the whole IPv6 space. IANA provides global unicast addresses that start with leading leftmost bits 001. A small portion of the addresses starting with 000 and 111 are allocated for special types. All other possible addresses are reserved for future use and are currently not being allocated.
+
+Figure 1. IANA’s Allocation of IPv6 Address SpaceFigure 1 visualizes the allocation logic. Note the following examples of Global Unicast Addresses:
+
+
+
+2001:4::aac4:13a2
+
+2001:0db6:87a3::2114:8f2e:0f70:1a11
+
+2c0f:c20a:12::1
+
+At present, in the Internet IPv6 routing table, all prefixes start with the hexadecimal digit 2 or 3, because IANA allocates only addresses that start with the first 3 bits 001.
+
+The IPv6 Address Types
+
+An IPv6 address is a 128-bit network layer identifier for a single interface of IPv6 enabled node.  There are three main types of addresses as shown in Figure 2:
+
+Unicast - A network layer identifier for a single interface of IPv6 enabled node. Packets sent to a unicast address are delivered to the interface configured with that IPv6 address. Therefore, it is one-to-one communication.
+
+Multicast - A network layer identifier for a set of interfaces, belonging to different IPv6 enabled nodes. Packets sent to a multicast address are delivered to all interfaces identified by that address. Therefore, it is one-to-many communication.
+
+Anycast - A network layer identifier for a set of interfaces, belonging to different IPv6 enabled nodes.  Packets sent to an anycast address are delivered to the "closest" interface identified by that address. "Closest" typically means the one with the best routing metric according to the IPv6 routing protocol. Therefore, it is one-to-closest communication.
+
+Broadcast - There are no broadcast addresses in IPv6. Broadcast functionality is implemented using multicast addresses.
+
+
+
+Figure 2. IPv6 Address TypesUnicast Addresses
+
+Aggregatable Global Unicast Address
+
+Aggregatable global unicast addresses are part of the global routing prefix. The structure of these addresses enables for aggregation of routing entries to achieve a smaller global IPv6 routing table. At present, all global unicast addresses start with binary value 001 (2000::/3). Their structure consists of a 48-bit global routing prefix and a 16-bit subnet ID also referred to as Site-Level Aggregator (SLA).
+
+Figure 3. Aggregatable Global IPv6 Address FormatLet's take a look at the following example of allocating global unicast addresses.
+
+IANA currently allocates addresses from the prefix 2000::/3 to the regional providers.
+
+For example, part of this address space is allocated to ARIN.
+
+ARIN then allocates sub-parts of this address space 2001:18::/23 to ISPs and large customers.
+
+Note that the prefix was given to Customer 1 2001:18B1:1::/48 is part of the bigger prefix 2001:18B1::/32 owned by the ISP, which itself is part of the bigger prefix 2001:18::/23 of ARIN and so on. That's is why these global IPv6 unicast addresses are called aggregatable.
+
+Figure 4. IPv6 Allocation ExampleLink-Local
+
+IPv6 link-local is a special type of unicast address that is auto-configured on any interface using a combination of the link-local prefix FE80::/10 (first 10 bits equal to 1111 1110 10) and the MAC address of the interface. The structure of a link-local address is shown in Figure 4.
+
+Figure 5. IPv6 Link-local address structureThe idea is to enable nodes attached to a common link to communicate without the need for globally unique addresses. Similar concept to 169.254.0.0/16 in IPv4. If we connect several IPv6 enabled nodes to a switch, they will auto-configure their interfaces with link-local addresses, will discover each other, and be able to communicate. The scope of the link-local address is only its respective link. Routers do not forward packets that have a link-local source or destination addresses to other links.
+
+Figure 3. IPv6 Link-local address auto-configured on WindowsLoopback
+
+In both IPv4 and IPv6, a loopback address identifies a logical interface that has no physical representation and is always up and running. Packets sent to a loopback address are returned (looped) on the same interface. In the computer world, loopback addresses are typically used for testing the TCP/IP networking stack.
+
+In IPv4, the entire network 127.0.0.0/8 address range is reserved for loopback addresses but all leading operating systems use the famous address 127.0.0.1 called "localhost" by default. The rest of the 127.0.0.0/8 address space is typically not used.
+
+In IPv6, the IPv6 address 0:0:0:0:0:0:0:1/128 is reserved for loopback identifier. It can be shortened to ::1/128 using the rules we have learned in the previous lesson.
+
+Unspecified
+
+In IPv4 and IPv6, the unspecified address in a special type of address with all binary bits set 0. Therefore, in v4 it looks like 0.0.0.0/32 and in v6 it looks like 0:0:0:0:0:0:0:0 or completely shortened as ::/128. The unspecified address is used by the Operating Systems in the absence of any valid IP address and processes like DHCP.
+
+Routers do not forward packets with source or destination address set to the unspecified address.
+
+Unique Local
+
+A unique local address is a special type of globally unique IPv6 address that has the following characteristics:
+
+It has a globally unique prefix similar to global unicast addresses. If it is accidentally leaked outside of the organization, there will be no conflict with other IPv6 global prefixes.
+
+Its structure is well-known (shown in figure 4) which allows for easy filtering at site boundaries.
+
+It allows sites to be interconnected without creating any address conflicts.
+
+It is an Internet Service Provider independent address space. Therefore these addresses won't overlap with any other ISP assigned range.
+
+Application threats these address as regular global IPv6 ones.
+
+Internet routers filter out any incoming or outgoing Local IPv6 unicast routes. The structure of a unique local address is shown below.
+
+Figure 6. IPv6 Unique-local Address StructureEmbedded IPv4-in-IPv6
+
+Embedded IPv4-in-IPv6 is a unicast address that has only zeros in the first 96-bits of the address and an IPv4 address in the rightmost 32-bits.Therefore, when IPv4 address A.B.C.D (in hex digits) is embedded in IPv6 using this logic, it becomes 0:0:0:0:0:0:A:B:C:D or just ::A:B:C:D. These types of IPv6 addresses are used in automatic tunnels supporting both IPv4 and IPv6 protocol stacks. Shown in the figure below is the structure of an Embedded IPv4-in-IPv6 address.
+
+Figure 7. Embedded IPv4-in-IPv6 Address FormatMulticast Addresses
+
+Network multicast is a technique in which a node sends packets to multiple destinations simultaneously (one-to-many). The destinations actually are a set of interfaces, identified by a single multicast address known as a multicast group.
+
+In IPv6, multicast addresses are distinguished from all other types by the value of the leftmost 8 bits of the addresses: a value of 11111111 (hex digits FF) identifies that the address is multicast. Therefore, all multicast addresses are part of the prefix ff00::/8, which is equivalent to the IPv4 multicast address space of 224.0.0.0/4. Two important rules apply to IPv4 and IPv6 multicast:
+
+Packets sent to a multicast group always has a unicast source address.
+
+A multicast address can not be a source address of a packet.
+
+There aren't broadcast addresses in IPv6. Instead, in IPv6 this functionality is done using special multicast groups - all-IPv6 devices multicast address and a solicited-node multicast address.
+
+Well-known Multicast Addresses
+
+As you may already know, in IPv4 there are several well-known multicast addresses in the range 224.0.0.0/24. Well-known means that these addresses are predefined and reserved for special use.
+
+In IPv6, all well-known multicast addresses start with the prefix ff00::/12. This means that the first 3 hexadecimal digits of an address will always be ff0. Several examples of such addresses are shown in the table below:
+
+
+
+Table 1. Well-known IPv6 multicast addresses
+
+Address
+
+Function
+
+FF02::1
+
+All Nodes Address
+
+FF02::2
+
+All Routers Address
+
+FF02::4
+
+DVMRP Routers
+
+FF02::5
+
+All OSPFv3 routers
+
+FF02::6
+
+OSPFv3 Designated Routers
+
+FF02::a
+
+All EIGRP (IPv6) routers
+
+FF02::D
+
+All PIM Routers
+
+FF02::12
+
+VRRP
+
+FF02::16
+
+All MLDv2-capable routers
+
+
+
+Solicited-node Multicast Address
+
+A solicited-node multicast address is a special type of IPv6 multicast. It is used as a more efficient approach to IPv4's broadcast delivery. A solicited-node multicast address is generated automatically using an IPv6 unicast of an interface.
+
+When an interface is configured with an IPv6 unicast address, a solicited-node multicast address is generated automatically based on the unicast address for this interface and the node joins the multicast group. Therefore, any unicast address has a corresponding solicited-node multicast address. This auto-generated multicast group is then used for address resolution, neighbor discovery, and duplicate address detection.
+
+As shown in figure 7, a solicited-node multicast address consists of the fixed prefix FF02::1:FF00:0/104 and the last 24 bits of the corresponding IPv6 address.
+
+Figure 8. Solicited-node multicast address format
+
+As we have already learned - there is no broadcast in IPv6. There is no ARP as well. When a node needs to resolve the MAC address of a known IPv6 address, the device still needs to send a request. In this request packet, the destination IPv6 address is the solicited-node multicast address corresponding to the target IPv6 unicast address (for reference, in IPv4 ARP target address is 0.0.0.0), and the destination MAC address is the multicast MAC address corresponding to the multicast address. Only the targeted node 'listens' to this solicited-node multicast address. Therefore the request will be processed only by the targeted node and not by all node attached to the link as it happens with broadcasted ARP in IPv4.
+
+
+
+Router#sh ipv6 interface gi0/0/0
+
+GigabitEthernet0/0/0 is up, line protocol is up
+
+IPv6 is enabled, link-local address is FE80::ABCD:1234
+
+No Virtual link-local address(es):
+
+Global unicast address(es):
+
+2001::1234:ABCD, subnet is 2001::/64
+
+Joined group address(es):
+
+FF02::1
+
+FF02::1:FF34:ABCD
+
+FF02::1:FFCD:1234
+
+MTU is 1500 bytes
+
+ICMP error messages limited to one every 100 milliseconds
+
+ICMP redirects are enabled
+
+ICMP unreachables are sent
+
+ND DAD is enabled, number of DAD attempts: 1
+
+ND reachable time is 30000 milliseconds
+
+Anycast Addresses
+
+An anycast address is a network layer identifier typically assigned to more than one interface (a set of interfaces), belonging to different IPv6 enabled nodes.  Packets sent to an anycast address are delivered to the "nearest" interface identified by that address. "Nearest" typically means the one with the best routing metric according to the IPv6 routing protocol.
+
+Anycast addresses are allocated from the unicast address space, therefore they are indistinguishable from global unicast addresses. Configuring the same unicast address to more than one interface makes it an anycast address. Devices that have an anycast address assigned must be explicitly configured to recognize that the address is used for anycast communication, as shown in the configuration example below.
+
+
+
+Device(config-if)#ipv6 address 2001:4db8:a541::/128 anycast
+
+Summary
+
+Let's summarize all types of IPv6 address we have discussed in this lesson:
+
+Global Unicast
+
+At present, IANA allocates global unicast addresses that start with binary value 001 (2000::/3).
+
+Their structure consists of a 48-bit global routing prefix and a 16-bit subnet ID also referred to as Site-Level Aggregator (SLA).
+
+The structure of these addresses enables for aggregation of routing entries to achieve a smaller global IPv6 routing table.
+
+
+
+Unique-local
+
+It has a globally unique prefix similar to global unicast addresses.
+
+Its structure is well-known (shown in figure 4) which allows for easy filtering at site boundaries.
+
+It is an Internet Service Provider independent address space.
+
+
+
+Loopback
+
+The well-known loopback address in IPv6 is ::1/128.
+
+Similar concept to 127.0.0.0/8 in IPv4.
+
+Typically used for testing the TCP/IP protocol stack in operating systems.
+
+
+
+Unspecified
+
+The unspecified address in IPv6 is ::/128.
+
+Similar concept to 0.0.0.0 in IPv4
+
+
+
+Embedded IPv4-in-IPv6
+
+IPv4 address A.B.C.D (in hex digits) is embedded in IPv6 as 0:0:0:0:0:0:A:B:C:D or just ::A:B:C:D.
+
+IPv6 addresses are used in automatic tunnels supporting both IPv4 and IPv6.
+
+
+
+Link-local
+
+FE80::/10 prefix.
+
+Automatically assigned to any IPv6 enabled interface.
+
+Analogous to 169.254.0.0/16 in IPv4.
+
+Not routable. They are only valid in the scope of an interface.
+
+Used for Neighbor Discovery and Stateless Autoconfiguration.
+
+
+
+Well-known Multicast
+
+All well-known multicast addresses start with the prefix ff00::/12.
+
+They have a similar function as 224.0.0.0/24 in IPv4.
+
+
+
+Solicited-Node Multicast
+
+Each IPv6 unicast address has a corresponding solicited-node multicast address.
+
+The structure consists of the fixed prefix FF02::1:FF00:0/104 and the last 24 bits of the corresponding IPv6 address.
+
+These special multicast groups are used for address resolution, neighbor discovery, and duplicate address detection.
+
+
+
+
+
+
+
+Book traversal links for 6
+
+
+
+
+
+Previous LessonIPv6 Address Representation
+
+
+
+
+
+Next LessonIPv6 Neighbor Discovery Protocol
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Introduction to IP Version 6
+
+
+
+
+
+What is IPv6?
+
+
+
+
+
+IPv4 vs IPv6 - Understanding the differences
+
+
+
+
+
+
+
+
+
+IPv6 Addressing
+
+
+
+
+
+IPv6 Address Representation
+
+
+
+
+
+IPv6 Address Types
+
+
+
+
+
+IPv6 Neighbor Discovery Protocol
+
+
+
+
+
+IPv6 Stateless Address Auto-configuration (SLAAC)
+
+
+
+
+
+IPv6 on Windows
+
+
+
+
+
+Stateless DHCPv6
+
+
+
+
+
+Stateful DHCPv6
+
+
+
+
+
+
+
+
+
+Implementing IPv6
+
+
+
+
+
+IPv6 Routing Overview
+
+
+
+
+
+IPv6 Static Routing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tags
+
+
+
+
+
+
+
+
+
+IPv6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Comments
+
+
+
+
+
+
+
+
+
+There are no comments yet.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Main navigation
+
+
+
+
+
+Learning Paths
+
+
+
+
+
+Courses
+
+
+
+
+
+
+
+
+
+
+
+
+
+Legal
+
+
+
+
+
+Our Cookie Policy
+
+
+
+
+
+Our Privacy Policy
+
+
+
+
+
+Our Terms of Service
+
+
+
+
+
+
+
+
+
+
+
+
+
+Contribute
+
+
+
+
+
+Become an Author
+
+
+
+
+
+Donate
+
+
+
+
+
+Suggest an improvement
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Copyright © 2020-2025 NetworkAcademy.io
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

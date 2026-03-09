@@ -20,7 +20,7 @@ def scrape(url: str):
 
 # create filename and save in Knowledge dir
     filename = url.split("/")[-1] or "untitled"
-    filepath = os.path.join(KNOWLEDGE_DIR, filename)
+    filepath = os.path.join(KNOWLEDGE_DIR, f"{filename}.txt")
 
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(clean)

@@ -1,15 +1,21 @@
 # rag
-This project uses Python to create a RAG tool that parses notes. This was only intended for study purposes.
+This project uses Python to create a RAG tool that lets you parse notes and query notes. This was only intended for study purposes.
 
 ## How does it work
-- First the program indexes your notes (.txt or .md).
-- The notes gets chunked and turned into embeddings. During this process overlap is implemented so we don't loose context.
-- Stores the vectors using FAISS.
-- When we query now, the program retrieves the top 3 relevant chunks.
-- Finally those top chunks get passed to an LLM to generate the final answer.
-  
-<img width="844" height="122" alt="Screenshot 2026-03-09 at 1 51 20 PM" src="https://github.com/user-attachments/assets/b95c431c-cc65-4ca8-8ee1-b95ec316bac6" />
+Pick a note from the knowledge folder. Then the pipline begins:
+1. Chunking - The note gets split into overlapping word chunks.
+2. Embeddings - Each chunk is sent to OpenAI's text-embedding-3-small model and converted into a vector.
+3. FAISS Index - All vectors are stored in a FAISS flat index in memory.
+4. Retrieval - When you ask a question, it gets embedded the same way. FAISS finds the top 3 closest chunks by vector distance.
+5. Generation - The top chunks are passed to gpt4o mini as context. The model answers using only what's in the retrieved chunks.
 
 
 ## How to use
+1. install dependencies  
+```pip install openai faiss-cpu numpy python-dotenv requests```
 
+2. Add your OpenAI key to a .env file:
+```OPENAI_API_KEY=key```
+
+3. Run with
+```python3 main.py```

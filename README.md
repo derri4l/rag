@@ -28,11 +28,14 @@ In this preview i ran the tool against a Victor-Von-Doom wiki which you can find
 https://github.com/user-attachments/assets/7ec03aa9-4216-4ebd-807c-d4e55c1a2eb8
 
 Q1. What is this note about?
+(I asked this to see if the program could actaully read the context provided)
 
 Q2. What was Doom's superpower?
+(A general and basic question, which is provided in the notes)
 
 Q3. When did Doom get laser vision?
+(Intentionally asked something that never happened to see if it would answer out of context)
 
 Q4. Who did Doom have a soft spot for?
-
+(A slightly deeper question that requires pulling meaning from context rather than a direct fact)
 

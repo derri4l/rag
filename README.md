@@ -1,4 +1,4 @@
-# sailor
+# Sailor
 This project uses Python to create a RAG tool that lets you parse large documents and query them as well. This was only intended for study purposes.
 
 ## How does it work

@@ -78,11 +78,48 @@ def generate_answer(prompt: str) -> str:
     )
     return response.choices[0].message.content
 
-if __name__ == "__main__":
+# embed query, search FAISS, return top 3 matching chunks
+def search(query: str, index, chunks: list[str], top_k: int = 3):
+    response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=query
+    )
+# convert query to vector, find the distance and position
+    query_vector = np.array([response.data[0].embedding], dtype=np.float32)
+    distances, indices = index.search(query_vector, top_k)
+
+# use positions to find chunk
+    results = []
+    for rank, (i, dist) in enumerate(zip(indices[0], distances[0])):
+        print(f"result {rank+1} — distance: {dist:.4f}")
+        results.append(chunks[i])
+    return results
+
+def main():
+    print("\n----------- Notes ✎ -----------")
     files = list_notes()
     selected = select_note(files)
     text = load_note(os.path.join(knowledge_dir, selected))
-    chunks = chunk_text(text)
-    print(f"Chunks: {len(chunks)}")
-    print(f"chunk1: {chunks[0][:100]}")
 
+    print("\nIndexing...")
+    chunks = chunk_text(text)
+    vectors = embed_chunks(chunks)
+    index = store_in_faiss(vectors)
+
+    print(f"\nTotal words: {len(text.split())}")
+    print(f"Chunks: {len(chunks)}")
+    print("Vectors stored:", index.ntotal)
+
+    while True:
+        query = input("\nAsk away (or type 'quit'): ")
+        if query.lower() == "quit":
+            break
+        results = search(query, index, chunks)
+        context = build_context(results)
+        prompt = build_prompt(context, query)
+        answer = generate_answer(prompt)
+        print("\n----------- ANSWER -----------")
+        print(answer)
+
+if __name__ == "__main__":
+    main()

@@ -37,6 +37,7 @@ Q4. Who did Doom have a soft spot for?
 - (A slightly deeper question that requires pulling meaning from context rather than a direct fact)
 
 ## Next Steps
-- Auto chunk sizing
-- implement vector store/database
-- TUI 
+- Auto chunk sizing [x]
+- implement vector store/database []
+- switch to local LLM's  []
+- TUI []

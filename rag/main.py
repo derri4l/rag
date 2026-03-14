@@ -3,6 +3,7 @@ import os
 import openai
 import numpy as np
 import faiss
+import textwrap
 from dotenv import load_dotenv
 
 #load OpenAi api key
@@ -84,9 +85,14 @@ def build_prompt(context: str, question: str) -> str:
 def generate_answer(prompt: str) -> str:
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=500
     )
     return response.choices[0].message.content
+
+def print_answer(answer: str):
+    wrapped = textwrap.fill(answer, width=80)
+    print(wrapped)
 
 # embed query, search FAISS, return top 3 matching chunks
 def search(query: str, index, chunks: list[str], top_k: int = 3):
@@ -127,12 +133,16 @@ def main():
         query = input("\nAsk away (or type 'quit'): ")
         if query.lower() == "quit":
             break
+        if len(query) > 500:
+            print(f"Please keep query under 500 characters.")
+            continue
+
         results = search(query, index, chunks)
         context = build_context(results)
         prompt = build_prompt(context, query)
         answer = generate_answer(prompt)
         print("\n----------- ANSWER -----------")
-        print(answer)
+        print_answer(answer)
 
 if __name__ == "__main__":
     main()

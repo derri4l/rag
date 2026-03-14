@@ -26,6 +26,16 @@ def load_note(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
 
+# detect and set overlap/chunk size
+def detect_chunk(text: str) -> tuple[int, int]:
+    word_count = len(text.split())
+    if word_count < 500:
+        return 150, 40
+    elif word_count < 5000:
+        return 300, 80
+    else:
+        return 500, 100
+
 # split text into chunks w overlap
 def chunk_text(text:str, chunk_size: int = 300, overlap: int = 80) -> list[str]:  #change based on note length
     if overlap >= chunk_size:
@@ -101,12 +111,15 @@ def main():
     selected = select_note(files)
     text = load_note(os.path.join(knowledge_dir, selected))
 
+    # detect chunks
+    chunk_size, overlap = detect_chunk(text)
+    print(f"Words: {len(text.split())}")
+
     print("\nIndexing...")
     chunks = chunk_text(text)
     vectors = embed_chunks(chunks)
     index = store_in_faiss(vectors)
 
-    print(f"\nTotal words: {len(text.split())}")
     print(f"Chunks: {len(chunks)}")
     print("Vectors stored:", index.ntotal)
 

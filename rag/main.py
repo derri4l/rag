@@ -1,31 +1,33 @@
-import sys
 import os
-import openai
-import numpy as np
-import faiss
+import sys
 import textwrap
-from dotenv import load_dotenv
 
-#load OpenAi api key
-load_dotenv()
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+import faiss
+import numpy as np
+import ollama
 
-knowledge_dir = "../knowledge/"
+knowledge_dir = os.path.join(os.path.dirname(__file__), "../knowledge/")
+
 
 # List all txt notes in knowledge
 def list_notes(folder=knowledge_dir):
     files = [f for f in os.listdir(folder) if f.endswith((".txt"))]
     for i, f in enumerate(files):
-        print(f"{i+1}. {f}")
+        print(f"{i + 1}. {f}")
     return files
+
+
 # pick note
 def select_note(files):
-    choice = int(input("\nSelect a note(use numbers):")) -1
+    choice = int(input("\nSelect a note(use numbers):")) - 1
     return files[choice]
-#read note
+
+
+# read note
 def load_note(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
+
 
 # detect and set overlap/chunk size
 def detect_chunk(text: str) -> tuple[int, int]:
@@ -37,8 +39,11 @@ def detect_chunk(text: str) -> tuple[int, int]:
     else:
         return 500, 100
 
+
 # split text into chunks w overlap
-def chunk_text(text:str, chunk_size: int = 300, overlap: int = 80) -> list[str]:  #change based on note length
+def chunk_text(
+    text: str, chunk_size: int = 300, overlap: int = 80
+) -> list[str]:  # change based on note length
     if overlap >= chunk_size:
         raise ValueError('"Overlap must be smaller than the chunk"')
     words = text.split()
@@ -51,15 +56,14 @@ def chunk_text(text:str, chunk_size: int = 300, overlap: int = 80) -> list[str]:
         start += step
     return chunks
 
+
 def embed_chunks(chunks: list[str]) -> list[list[float]]:
     vectors = []
     for chunk in chunks:
-        response = client.embeddings.create(
-            model = "text-embedding-3-small",
-            input = chunk
-        )
-        vectors.append(response.data[0].embedding)
+        response = ollama.embeddings(model="nomic-embed-text", prompt=chunk)
+        vectors.append(response["embedding"])
     return vectors
+
 
 # store returned vectors in FAISS index
 def store_in_faiss(vectors: list[list[float]]):
@@ -68,8 +72,10 @@ def store_in_faiss(vectors: list[list[float]]):
     index.add(np.array(vectors, dtype=np.float32))
     return index
 
+
 def build_context(chunks: list[str]) -> str:
     return "\n\n".join(chunks)
+
 
 # LLM prompt
 def build_prompt(context: str, question: str) -> str:
@@ -82,34 +88,36 @@ def build_prompt(context: str, question: str) -> str:
     Question:
     {question}
 """
+
+
 def generate_answer(prompt: str) -> str:
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
+    response = ollama.chat(
+        model="gemma3:1b",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=500
+        options={"num_predict": 500},
     )
-    return response.choices[0].message.content
+    return response["message"]["content"]
+
 
 def print_answer(answer: str):
     wrapped = textwrap.fill(answer, width=80)
     print(wrapped)
 
+
 # embed query, search FAISS, return top 3 matching chunks
 def search(query: str, index, chunks: list[str], top_k: int = 3):
-    response = client.embeddings.create(
-        model="text-embedding-3-small",
-        input=query
-    )
-# convert query to vector, find the distance and position
-    query_vector = np.array([response.data[0].embedding], dtype=np.float32)
+    response = ollama.embeddings(model="nomic-embed-text", prompt=query)
+    # convert query to vector, find the distance and position
+    query_vector = np.array([response["embedding"]], dtype=np.float32)
     distances, indices = index.search(query_vector, top_k)
 
-# use positions to find chunk
+    # use positions to find chunk
     results = []
     for rank, (i, dist) in enumerate(zip(indices[0], distances[0])):
-        print(f"result {rank+1} — distance: {dist:.4f}")
+        print(f"result {rank + 1} — distance: {dist:.4f}")
         results.append(chunks[i])
     return results
+
 
 def main():
     print("\n----------- Notes ✎ -----------")
@@ -143,6 +151,7 @@ def main():
         answer = generate_answer(prompt)
         print("\n----------- ANSWER -----------")
         print_answer(answer)
+
 
 if __name__ == "__main__":
     main()

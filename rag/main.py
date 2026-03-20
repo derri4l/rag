@@ -19,8 +19,17 @@ def list_notes(folder=knowledge_dir):
 
 # pick note
 def select_note(files):
-    choice = int(input("\nSelect a note(use numbers):")) - 1
-    return files[choice]
+    while True:
+        try:
+            choice = int(input("\nSelect a note (use numbers): ")) - 1
+            if 0 <= choice < len(files):
+                return files[choice]
+            print(f"  Please enter a number between 1 and {len(files)}.")
+        except ValueError:
+            print("  Invalid input, enter a number.")
+        except (EOFError, KeyboardInterrupt):
+            print("\n  Bye!")
+            sys.exit(0)
 
 
 # read note
@@ -158,14 +167,14 @@ def search(query: str, index, chunks: list[str], top_k: int = 3):
 
 
 def main():
-    print("\n----------- Notes ✎ -----------")
+    print("\n-------------------- Notes ✎ -------------------")
     files = list_notes()
     selected = select_note(files)
     text = load_note(os.path.join(knowledge_dir, selected))
 
     # detect chunks
     chunk_size, overlap = detect_chunk(text)
-    print(f"Words: {len(text.split())}")
+    print(f"Word count: {len(text.split())}")
 
     print("\nIndexing...")
     chunks = chunk_text(text)
@@ -176,18 +185,27 @@ def main():
     print("Vectors stored:", index.ntotal)
 
     while True:
-        query = input("\nAsk away (or type 'quit'): ")
+        try:
+            query = input("\nAsk away (or type 'quit'): ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\n  Goodbye.")
+            break
+
+        if not query:
+            print("Please enter a question.")
+            continue
         if query.lower() == "quit":
+            print("  Goodbye.")
             break
         if len(query) > 500:
-            print(f"Please keep query under 500 characters.")
+            print("  Please keep query under 500 characters.")
             continue
 
         results = search(query, index, chunks)
         context = build_context(results)
         prompt = build_prompt(context, query)
         answer = generate_answer(prompt)
-        print("\n----------- ANSWER -----------")
+        print("\n------------------- ANSWER -------------------")
         print_answer(answer)
 
 

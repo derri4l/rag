@@ -1,43 +1,46 @@
 # Sailor
-This project uses Python to create a RAG tool (Retrieval-Augmented Generation), it lets you load documents or notes, index them in memory, and ask questions. This is only intended for study purposes.
+Sailor is a RAG tool (Retrieval-Augmented Generation), it lets you load documents or notes, index them in memory, and ask questions. This is only intended for study purposes.
 
-## How does it work
+## How does it work ?
 Pick a document/note from the knowledge folder. Then the pipline begins:
 1. **Chunking** -  The note gets split into overlapping word chunks.
-2. **Embeddings** -  Each chunk is sent to OpenAI's ```text-embedding-3-small``` model and converted into a vector.
+2. **Embeddings** - each chunk is converted into a vector using a local embedding model.
 3. **FAISS Index** -  All vectors are stored in a FAISS flat index in memory.
 4. **Retrieval** -  When you ask a question, it gets embedded the same way. FAISS finds the top 3 closest chunks by vector distance.
-5. **Generation** -  The top chunks are passed to an AI model as context. The model answers using only what's in the retrieved chunks.
+5. **Generation** -  The top chunks are passed to an LLM as context. The model answers using only what's in the retrieved chunks.
 
-## How to use
-1. install dependencies  
-```pip install openai faiss-cpu numpy python-dotenv requests```
+## Repo structure
+```
+sailor/
+├── rag/
+│   └── main.py          # main program
+│   └── scrap.py         # web scraper
+├── knowledge/           # your documents/notes (.txt)
+├── requirements.txt
+├── setup.py             # dependencies
+└── README.md
+```
+ 
+ ## Installation  
+ Requirements: Python 3.10+, Ollama installed and running.
+ ```
+to download the project:
+> git clone https://github.com/derri4l/sailor.git
 
-2. Add your OpenAI key to a .env file:
-```OPENAI_API_KEY=key```
+run this to get the dependencies installed:
+> python3 setup.py
 
-3. Run with
-```python3 main.py```
+pull the default embedding model and LLM
+> ollama pull nomic-embed-text
+> ollama pull gemma3:1b
 
-## Preview
-In this preview i ran the tool against a Victor-Von-Doom wiki which you can find in the knowledge folder. 
-
-https://github.com/user-attachments/assets/7ec03aa9-4216-4ebd-807c-d4e55c1a2eb8
-
-Q1. What is this note about?
-- (I asked this to see if the program could actaully read the context provided)
-
-Q2. What was Doom's superpower?
-- (A general and basic question, which is provided in the notes)
-
-Q3. When did Doom get laser vision?
-- (Intentionally asked something that never happened to see if it would answer out of context)
-
-Q4. Who did Doom have a soft spot for?
-- (A slightly deeper question that requires pulling meaning from context rather than a direct fact)
+to use the tool:
+> python3 rag/main.py
+```
 
 ## Next Steps
-- Auto chunk sizing [x]
-- implement vector store/database []
-- switching to local llm []
-- TUI []
+- Auto chunk sizing [🗸]
+- switching to local llm [🗸]
+- Token-based chunking [ ]
+- implement vector store/database [ ]
+- TUI [ ]

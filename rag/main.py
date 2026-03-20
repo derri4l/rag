@@ -8,6 +8,9 @@ import ollama
 
 knowledge_dir = os.path.join(os.path.dirname(__file__), "../knowledge/")
 
+BOLD = "\033[4m"
+RESET = "\033[0m"
+
 
 # List all txt notes in knowledge
 def list_notes(folder=knowledge_dir):
@@ -100,8 +103,46 @@ def generate_answer(prompt: str) -> str:
 
 
 def print_answer(answer: str):
-    wrapped = textwrap.fill(answer, width=80)
-    print(wrapped)
+    formatted = format_answer(answer)
+    for line in formatted.split("\n"):
+        if line.startswith("  •") or line.startswith("  $") or line.startswith('  "'):
+            print(line)
+        else:
+            print(textwrap.fill(line, width=80) if line.strip() else "")
+
+
+def format_answer(answer: str) -> str:
+    lines = answer.split("\n")
+    formatted = []
+
+    for line in lines:
+        stripped = line.strip()
+
+        # code/commands: ```block``` or `inline`
+        if stripped.startswith("```") or stripped.endswith("```"):
+            formatted.append(f"  {BOLD}$ {stripped.replace('`', '').strip()}{RESET}")
+
+        elif stripped.startswith("`") and stripped.endswith("`"):
+            formatted.append(f"  {BOLD}$ {stripped.strip('`')}{RESET}")
+
+        # blockquotes
+        elif stripped.startswith(">"):
+            content = stripped.lstrip("> ").strip()
+            formatted.append(f'  "{content}"')
+
+        # unordered lists
+        elif stripped.startswith(("-", "*", "•")):
+            content = stripped.lstrip("-*• ").strip()
+            formatted.append(f"  • {content}")
+
+        # numbered lists
+        elif stripped and stripped[0].isdigit() and "." in stripped[:3]:
+            formatted.append(f"  {stripped}")
+
+        else:
+            formatted.append(line)
+
+    return "\n".join(formatted)
 
 
 # embed query, search FAISS, return top 3 matching chunks

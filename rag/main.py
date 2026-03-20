@@ -124,9 +124,9 @@ def format_answer(answer: str) -> str:
     for line in lines:
         stripped = line.strip()
 
-        # code/commands: ```block``` or `inline`
         if stripped.startswith("```") or stripped.endswith("```"):
-            formatted.append(f"$ {stripped.replace('`', '').strip()}")
+            clean = stripped.replace("`", "").strip()
+            formatted.append(f"$ {clean}")
 
         elif stripped.startswith("`") and stripped.endswith("`"):
             formatted.append(f"$ {stripped.strip('`')}")
@@ -161,13 +161,13 @@ def search(query: str, index, chunks: list[str], top_k: int = 3):
     # use positions to find chunk
     results = []
     for rank, (i, dist) in enumerate(zip(indices[0], distances[0])):
-        print(f"result {rank + 1} — distance: {dist:.4f}")
+        # print(f"result {rank + 1} — distance: {dist:.4f}")
         results.append(chunks[i])
     return results
 
 
 def main():
-    print("\n-------------------- Notes ✎ -------------------")
+    print("\n-------------------- Notes -------------------")
     files = list_notes()
     selected = select_note(files)
     text = load_note(os.path.join(knowledge_dir, selected))
@@ -186,16 +186,16 @@ def main():
 
     while True:
         try:
-            query = input("\nAsk away (or type 'quit'): ").strip()
+            query = input("\nAsk a question (or type 'quit'): ").strip()
         except (EOFError, KeyboardInterrupt):
-            print("\n  Goodbye.")
+            print("\n  Bye!.")
             break
 
         if not query:
             print("Please enter a question.")
             continue
         if query.lower() == "quit":
-            print("  Goodbye.")
+            print("  Bye!")
             break
         if len(query) > 500:
             print("  Please keep query under 500 characters.")
@@ -205,7 +205,7 @@ def main():
         context = build_context(results)
         prompt = build_prompt(context, query)
         answer = generate_answer(prompt)
-        print("\n------------------- ANSWER -------------------")
+        print("\n> ", end="")
         print_answer(answer)
 
 

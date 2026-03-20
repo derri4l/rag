@@ -8,9 +8,6 @@ import ollama
 
 knowledge_dir = os.path.join(os.path.dirname(__file__), "../knowledge/")
 
-BOLD = "\033[4m"
-RESET = "\033[0m"
-
 
 # List all txt notes in knowledge
 def list_notes(folder=knowledge_dir):
@@ -120,10 +117,10 @@ def format_answer(answer: str) -> str:
 
         # code/commands: ```block``` or `inline`
         if stripped.startswith("```") or stripped.endswith("```"):
-            formatted.append(f"  {BOLD}$ {stripped.replace('`', '').strip()}{RESET}")
+            formatted.append(f"$ {stripped.replace('`', '').strip()}")
 
         elif stripped.startswith("`") and stripped.endswith("`"):
-            formatted.append(f"  {BOLD}$ {stripped.strip('`')}{RESET}")
+            formatted.append(f"$ {stripped.strip('`')}")
 
         # blockquotes
         elif stripped.startswith(">"):
